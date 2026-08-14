@@ -4,6 +4,8 @@ Kairo Blender Bridge is an artist-facing Blender extension for validating and
 publishing production assets into the Kairo asset pipeline. It is one part of
 the multi-DCC Kairo Production Tools portfolio.
 
+![Validated Blender portfolio asset](docs/images/blender-asset-result.png)
+
 ## Current verified host
 
 - Blender 5.2.0 LTS
@@ -34,3 +36,19 @@ python3 scripts/build_extension.py \
 This builds the pinned `KairoPipelineCore` wheel and packages it inside
 `dist/kairo_blender-0.1.0.zip`. Generated wheels and packages are deliberately
 excluded from Git; CI publishes the ready-to-install zip as an artifact.
+
+## Reproduce the portfolio scene
+
+After installing and enabling the extension:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender \
+  --background --python examples/create_portfolio_scene.py
+```
+
+The script creates a redistributable scene from primitives, validates the
+selected asset with zero diagnostics, saves the `.blend` inside a temporary
+portfolio project, and renders the documented 1280×720 result.
+
+See [the artist workflow](docs/ARTIST_WORKFLOW.md) for validation, safe fixes,
+dry-run behavior, publication, and failure recovery.

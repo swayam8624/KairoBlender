@@ -49,6 +49,8 @@ def main() -> int:
         else repository / "dist" / "kairo_blender-0.1.0.zip"
     )
     output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists():
+        output.unlink()
     subprocess.run(
         [
             str(blender),
