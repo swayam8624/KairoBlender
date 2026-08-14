@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import bpy
 import re
+from pathlib import Path
 
 from .adapter import snapshot_scene
+from .publisher import export_and_publish
 from .validation import ValidationProfile, validate_scene
 
 
@@ -176,3 +178,44 @@ def _portable_unique_name(
         if candidate.casefold() not in occupied:
             return candidate
     raise RuntimeError("could not create a unique portable object name")
+
+
+class KAIRO_OT_publish(bpy.types.Operator):
+    bl_idname = "kairo.publish"
+    bl_label = "Publish to Kairo"
+    bl_description = "Validate, export, fingerprint, and atomically publish the asset"
+    bl_options = {"REGISTER"}
+
+    dry_run: bpy.props.BoolProperty(default=False)
+
+    def execute(self, context: bpy.types.Context) -> set[str]:
+        settings = context.scene.kairo_pipeline
+        validation_result = bpy.ops.kairo.validate()
+        if validation_result != {"FINISHED"}:
+            return {"CANCELLED"}
+        if any(item.severity == "error" for item in settings.diagnostics):
+            self.report({"WARNING"}, "Resolve blocking diagnostics before publishing")
+            return {"CANCELLED"}
+        try:
+            result = export_and_publish(
+                context,
+                project_root=Path(bpy.path.abspath(settings.project_root)),
+                project_name=settings.project_name,
+                asset_name=settings.asset_name,
+                version=settings.version,
+                selected_only=settings.scope == "SELECTED",
+                dry_run=self.dry_run,
+                replace=settings.replace_existing,
+            )
+            settings.last_publish_target = str(result.target)
+            settings.last_publish_hash = result.manifest_sha256
+            settings.last_summary = (
+                f"{'Planned' if result.dry_run else 'Published'} "
+                f"{result.files} file(s), {result.bytes} bytes"
+            )
+            self.report({"INFO"}, settings.last_summary)
+            return {"FINISHED"}
+        except (OSError, TypeError, ValueError, RuntimeError) as error:
+            settings.last_summary = f"Publish failed: {error}"
+            self.report({"ERROR"}, settings.last_summary)
+            return {"CANCELLED"}

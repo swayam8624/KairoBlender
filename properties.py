@@ -60,3 +60,10 @@ class KairoProjectSettings(bpy.types.PropertyGroup):
     )
     diagnostics: bpy.props.CollectionProperty(type=KairoDiagnosticItem)
     last_summary: bpy.props.StringProperty(default="Not validated")
+    replace_existing: bpy.props.BoolProperty(
+        name="Replace Existing Version",
+        description="Atomically replace the same version while preserving rollback",
+        default=False,
+    )
+    last_publish_target: bpy.props.StringProperty()
+    last_publish_hash: bpy.props.StringProperty()

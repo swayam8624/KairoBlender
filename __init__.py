@@ -8,6 +8,7 @@ from .panel import KAIRO_PT_pipeline
 from .operators import (
     KAIRO_OT_clear_diagnostics,
     KAIRO_OT_fix_diagnostic,
+    KAIRO_OT_publish,
     KAIRO_OT_select_diagnostic,
     KAIRO_OT_validate,
 )
@@ -21,6 +22,7 @@ _CLASSES = (
     KAIRO_OT_select_diagnostic,
     KAIRO_OT_clear_diagnostics,
     KAIRO_OT_fix_diagnostic,
+    KAIRO_OT_publish,
     KAIRO_PT_pipeline,
 )
 

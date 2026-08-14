@@ -25,6 +25,23 @@ class KAIRO_PT_pipeline(bpy.types.Panel):
         row.operator("kairo.validate", icon="CHECKMARK")
         row.operator("kairo.clear_diagnostics", text="", icon="X")
         layout.label(text=settings.last_summary)
+        publish_row = layout.row(align=True)
+        dry_run = publish_row.operator(
+            "kairo.publish",
+            text="Dry Run",
+            icon="VIEWZOOM",
+        )
+        dry_run.dry_run = True
+        publish = publish_row.operator(
+            "kairo.publish",
+            text="Publish",
+            icon="EXPORT",
+        )
+        publish.dry_run = False
+        layout.prop(settings, "replace_existing")
+        if settings.last_publish_target:
+            layout.label(text=settings.last_publish_target, icon="FILE_TICK")
+            layout.label(text=settings.last_publish_hash[:16], icon="KEY_HLT")
         for index, diagnostic in enumerate(settings.diagnostics):
             box = layout.box()
             row = box.row(align=True)
