@@ -5,6 +5,17 @@ from __future__ import annotations
 import bpy
 
 
+class KairoDiagnosticItem(bpy.types.PropertyGroup):
+    """UI-safe copy of one structured pipeline diagnostic."""
+
+    code: bpy.props.StringProperty()
+    severity: bpy.props.StringProperty()
+    message: bpy.props.StringProperty()
+    suggestion: bpy.props.StringProperty()
+    object_name: bpy.props.StringProperty()
+    property_name: bpy.props.StringProperty()
+
+
 class KairoProjectSettings(bpy.types.PropertyGroup):
     """Artist-authored destination and version for the next publish."""
 
@@ -30,4 +41,21 @@ class KairoProjectSettings(bpy.types.PropertyGroup):
         min=1,
         max=999_999,
     )
-
+    scope: bpy.props.EnumProperty(
+        name="Scope",
+        description="Objects inspected and exported by the pipeline",
+        items=(
+            ("SELECTED", "Selected Objects", "Use the current object selection"),
+            ("SCENE", "Complete Scene", "Use every object in the active scene"),
+        ),
+        default="SELECTED",
+    )
+    polygon_budget: bpy.props.IntProperty(
+        name="Polygon Budget",
+        description="Warn when the publish set exceeds this polygon count",
+        default=500_000,
+        min=1,
+        max=100_000_000,
+    )
+    diagnostics: bpy.props.CollectionProperty(type=KairoDiagnosticItem)
+    last_summary: bpy.props.StringProperty(default="Not validated")

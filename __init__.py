@@ -5,11 +5,20 @@ from __future__ import annotations
 import bpy
 
 from .panel import KAIRO_PT_pipeline
-from .properties import KairoProjectSettings
+from .operators import (
+    KAIRO_OT_clear_diagnostics,
+    KAIRO_OT_select_diagnostic,
+    KAIRO_OT_validate,
+)
+from .properties import KairoDiagnosticItem, KairoProjectSettings
 
 
 _CLASSES = (
+    KairoDiagnosticItem,
     KairoProjectSettings,
+    KAIRO_OT_validate,
+    KAIRO_OT_select_diagnostic,
+    KAIRO_OT_clear_diagnostics,
     KAIRO_PT_pipeline,
 )
 
@@ -31,4 +40,3 @@ def unregister() -> None:
         del bpy.types.Scene.kairo_pipeline
     for cls in reversed(_CLASSES):
         bpy.utils.unregister_class(cls)
-
