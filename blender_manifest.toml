@@ -1,0 +1,32 @@
+schema_version = "1.0.0"
+
+id = "kairo_blender"
+version = "0.1.0"
+name = "Kairo Blender Bridge"
+tagline = "Validate and publish production assets to Kairo"
+maintainer = "Swayam Singal"
+type = "add-on"
+website = "https://github.com/swayam8624/KairoBlender"
+tags = ["Pipeline", "Import-Export"]
+
+blender_version_min = "5.2.0"
+
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
+
+[permissions]
+files = "Validate source dependencies and publish project assets"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/.git/",
+  "/*.zip",
+  "/test-output/",
+  "/tests/",
+  "/scripts/",
+  "/docs/",
+  "/.github/",
+]
+
