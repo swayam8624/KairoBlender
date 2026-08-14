@@ -19,5 +19,18 @@ the multi-DCC Kairo Production Tools portfolio.
 ```
 
 The initial increment registers an installable extension panel and persistent
-scene settings. Validation, export, and publication are delivered in subsequent
-small working commits.
+scene settings. The current vertical slice validates a static asset, navigates
+and safely fixes supported problems, exports separate glTF, fingerprints every
+payload, supports dry-run planning, and publishes through an atomic rename.
+
+## Build an installable extension
+
+```bash
+python3 scripts/build_extension.py \
+  --core-source ../KairoPipelineCore \
+  --blender /Applications/Blender.app/Contents/MacOS/Blender
+```
+
+This builds the pinned `KairoPipelineCore` wheel and packages it inside
+`dist/kairo_blender-0.1.0.zip`. Generated wheels and packages are deliberately
+excluded from Git; CI publishes the ready-to-install zip as an artifact.

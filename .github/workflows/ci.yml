@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  blender:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: swayam8624/KairoPipelineCore
+          path: KairoPipelineCore
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download Blender 5.2 LTS
+        run: |
+          curl --fail --location --output blender.tar.xz \
+            https://download.blender.org/release/Blender5.2/blender-5.2.0-linux-x64.tar.xz
+          echo "96f6c181a30f4950607839dc84d42a354b250d8a0231b098b59b7bc69c351c48  blender.tar.xz" | sha256sum --check
+          tar -xf blender.tar.xz
+          mv blender-5.2.0-linux-x64 blender
+      - name: Run pure validation tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/KairoPipelineCore/src
+        run: python -m unittest discover -s tests -p 'test_validation.py' -v
+      - name: Run native Blender tests
+        run: ./blender/blender --background --factory-startup --python tests/run_blender_tests.py
+      - name: Build installable extension
+        run: >-
+          python scripts/build_extension.py
+          --core-source KairoPipelineCore
+          --blender blender/blender
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kairo-blender-extension
+          path: dist/kairo_blender-0.1.0.zip
