@@ -14,6 +14,7 @@ class KairoDiagnosticItem(bpy.types.PropertyGroup):
     suggestion: bpy.props.StringProperty()
     object_name: bpy.props.StringProperty()
     property_name: bpy.props.StringProperty()
+    fixable: bpy.props.BoolProperty(default=False)
 
 
 class KairoProjectSettings(bpy.types.PropertyGroup):

@@ -3,9 +3,20 @@
 from __future__ import annotations
 
 import bpy
+import re
 
 from .adapter import snapshot_scene
 from .validation import ValidationProfile, validate_scene
+
+
+_FIXABLE_CODES = frozenset(
+    {
+        "OBJECT_NAME_PORTABILITY",
+        "OBJECT_RENDER_HIDDEN",
+        "OBJECT_SCALE_NONUNIFORM",
+        "OBJECT_SCALE_UNAPPLIED",
+    }
+)
 
 
 class KAIRO_OT_validate(bpy.types.Operator):
@@ -32,6 +43,7 @@ class KAIRO_OT_validate(bpy.types.Operator):
                 item.severity = diagnostic.severity.value
                 item.message = diagnostic.message
                 item.suggestion = diagnostic.suggestion
+                item.fixable = diagnostic.code in _FIXABLE_CODES
                 if diagnostic.location is not None:
                     item.object_name = diagnostic.location.object_path
                     item.property_name = diagnostic.location.property_name
@@ -89,3 +101,78 @@ class KAIRO_OT_clear_diagnostics(bpy.types.Operator):
         settings.diagnostics.clear()
         settings.last_summary = "Not validated"
         return {"FINISHED"}
+
+
+class KAIRO_OT_fix_diagnostic(bpy.types.Operator):
+    bl_idname = "kairo.fix_diagnostic"
+    bl_label = "Apply Safe Fix"
+    bl_description = "Apply the bounded automatic repair for this diagnostic"
+    bl_options = {"REGISTER", "UNDO"}
+
+    index: bpy.props.IntProperty()
+
+    def execute(self, context: bpy.types.Context) -> set[str]:
+        settings = context.scene.kairo_pipeline
+        if self.index < 0 or self.index >= len(settings.diagnostics):
+            self.report({"ERROR"}, "Diagnostic index is no longer valid")
+            return {"CANCELLED"}
+        diagnostic = settings.diagnostics[self.index]
+        target = context.scene.objects.get(diagnostic.object_name)
+        if target is None:
+            self.report({"ERROR"}, "Safe fix requires an available object")
+            return {"CANCELLED"}
+
+        if diagnostic.code == "OBJECT_RENDER_HIDDEN":
+            target.hide_render = False
+        elif diagnostic.code in {
+            "OBJECT_SCALE_NONUNIFORM",
+            "OBJECT_SCALE_UNAPPLIED",
+        }:
+            if target.mode != "OBJECT":
+                self.report({"ERROR"}, "Apply scale from Object mode")
+                return {"CANCELLED"}
+            with context.temp_override(
+                active_object=target,
+                object=target,
+                selected_objects=[target],
+                selected_editable_objects=[target],
+            ):
+                result = bpy.ops.object.transform_apply(
+                    location=False,
+                    rotation=False,
+                    scale=True,
+                )
+            if result != {"FINISHED"}:
+                self.report({"ERROR"}, "Blender could not apply object scale")
+                return {"CANCELLED"}
+        elif diagnostic.code == "OBJECT_NAME_PORTABILITY":
+            target.name = _portable_unique_name(context.scene, target)
+        else:
+            self.report({"ERROR"}, "This diagnostic has no safe automatic fix")
+            return {"CANCELLED"}
+
+        bpy.ops.kairo.validate()
+        return {"FINISHED"}
+
+
+def _portable_unique_name(
+    scene: bpy.types.Scene,
+    target: bpy.types.Object,
+) -> str:
+    base = re.sub(r"[^A-Za-z0-9_.-]+", "_", target.name).strip("._-")
+    if not base:
+        base = "Object"
+    base = base[:128]
+    occupied = {
+        item.name.casefold()
+        for item in scene.objects
+        if item != target
+    }
+    if base.casefold() not in occupied:
+        return base
+    for suffix in range(1, 100_000):
+        suffix_text = f"_{suffix}"
+        candidate = f"{base[: 128 - len(suffix_text)]}{suffix_text}"
+        if candidate.casefold() not in occupied:
+            return candidate
+    raise RuntimeError("could not create a unique portable object name")

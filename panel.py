@@ -41,6 +41,13 @@ class KAIRO_PT_pipeline(bpy.types.Panel):
                     icon="RESTRICT_SELECT_OFF",
                 )
                 operator.index = index
+            if diagnostic.fixable:
+                operator = row.operator(
+                    "kairo.fix_diagnostic",
+                    text="Fix",
+                    icon="TOOL_SETTINGS",
+                )
+                operator.index = index
             box.label(text=diagnostic.message)
             if diagnostic.suggestion:
                 box.label(text=diagnostic.suggestion, icon="LIGHTBULB")

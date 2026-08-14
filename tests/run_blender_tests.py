@@ -60,6 +60,34 @@ class ExtensionRegistrationTests(unittest.TestCase):
         finally:
             extension.unregister()
 
+    def test_safe_fix_applies_scale_and_revalidates(self) -> None:
+        import bpy
+
+        extension = importlib.import_module(REPOSITORY.name)
+        extension.register()
+        try:
+            bpy.ops.object.select_all(action="DESELECT")
+            cube = bpy.context.scene.objects["Cube"]
+            cube.scale = (2.0, 1.0, 1.0)
+            cube.select_set(True)
+            bpy.context.view_layer.objects.active = cube
+            bpy.ops.kairo.validate()
+            settings = bpy.context.scene.kairo_pipeline
+            fix_index = next(
+                index
+                for index, item in enumerate(settings.diagnostics)
+                if item.code == "OBJECT_SCALE_UNAPPLIED"
+            )
+            result = bpy.ops.kairo.fix_diagnostic(index=fix_index)
+            self.assertEqual(result, {"FINISHED"})
+            self.assertEqual(tuple(cube.scale), (1.0, 1.0, 1.0))
+            self.assertNotIn(
+                "OBJECT_SCALE_UNAPPLIED",
+                {item.code for item in settings.diagnostics},
+            )
+        finally:
+            extension.unregister()
+
 
 suite = unittest.defaultTestLoader.loadTestsFromTestCase(
     ExtensionRegistrationTests
