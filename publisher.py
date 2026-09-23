@@ -41,6 +41,10 @@ def export_and_publish(
     blend_path = Path(bpy.data.filepath)
     if not blend_path.is_file():
         raise FileNotFoundError("save the Blender scene before publishing")
+    if bpy.data.is_dirty:
+        raise RuntimeError(
+            "save Blender scene changes before publishing so provenance matches exported content"
+        )
     try:
         source_path = blend_path.resolve().relative_to(root).as_posix()
     except ValueError as error:
