@@ -139,6 +139,61 @@ class ExtensionRegistrationTests(unittest.TestCase):
             extension.unregister()
 
 
+
+    def test_publish_is_immutable_and_requires_saved_state_for_replacement(self) -> None:
+        import bpy
+
+        extension = importlib.import_module(REPOSITORY.name)
+        extension.register()
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                project = Path(directory)
+                sources = project / "sources"
+                sources.mkdir()
+                blend_path = sources / "crate.blend"
+                bpy.ops.wm.save_as_mainfile(
+                    filepath=str(blend_path),
+                    check_existing=False,
+                )
+
+                settings = bpy.context.scene.kairo_pipeline
+                settings.project_root = str(project)
+                settings.project_name = "Portfolio"
+                settings.asset_name = "Crate"
+                settings.version = 1
+                settings.scope = "SELECTED"
+
+                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"FINISHED"})
+                target = Path(settings.last_publish_target)
+                first_hash = settings.last_publish_hash
+                first_manifest = (target / "publish.kairo.json").read_bytes()
+
+                # Existing versions are immutable unless replacement is explicit.
+                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"CANCELLED"})
+                self.assertEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
+
+                settings.replace_existing = True
+                cube = bpy.context.scene.objects["Cube"]
+                cube.location.x = 3.0
+                self.assertTrue(bpy.data.is_dirty)
+
+                # Exporting unsaved data would make the source fingerprint lie
+                # about what was exported, so certification requires rejection.
+                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"CANCELLED"})
+                self.assertEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
+
+                bpy.ops.wm.save_as_mainfile(
+                    filepath=str(blend_path),
+                    check_existing=False,
+                )
+                self.assertFalse(bpy.data.is_dirty)
+                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"FINISHED"})
+                self.assertNotEqual(settings.last_publish_hash, first_hash)
+                self.assertNotEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
+        finally:
+            extension.unregister()
+
+
 suite = unittest.defaultTestLoader.loadTestsFromTestCase(
     ExtensionRegistrationTests
 )
