@@ -1,28 +1,19 @@
-# KairoBlender Status
+# KairoBlender v1 Status
 
-Wave: A — native production-tool certification  
-Frozen v1 target: 95/100  
-Source gate: complete  
-Native gate: Blender 5.2 LTS headless suite
+**Target: 95%. Current completion claim: UNVERIFIED.**
 
-## Frozen v1 scope
+The earlier percentage claim has been retracted. A frozen scope or a populated
+`STATUS.yaml` is not evidence that this repository builds, runs, or satisfies
+its integration contract.
 
-KairoBlender v1 validates static publishable assets, navigates diagnostics, applies only bounded safe fixes, exports separate glTF, fingerprints all payloads, supports non-mutating dry-run, and atomically publishes through KairoPipelineCore. Full Blender replacement, rigging tools and arbitrary artistic repair are out of scope.
+Current rules:
 
-## 95 exit evidence
+- `target_score: 95` is a target only.
+- `completion_score: unverified` remains until exact-head acceptance executes.
+- source/test failures block completion regardless of documentation state.
+- platform-gated behavior is not inferred from another host.
+- post-v1 exclusions may bound scope, but they cannot hide missing v1 behavior.
 
-- Native extension registration/unregistration is tested.
-- Native diagnostic navigation and safe transform repair are tested.
-- Real Blender glTF export, dry-run and atomic publication are tested.
-- Publication now rejects unsaved Blender state so the source fingerprint cannot describe a different file than the scene that was exported.
-- Certification tests cover immutable existing versions, explicit replacement, dirty-scene rejection and saved replacement provenance.
-
-## Verification policy
-
-The source is ready for 95 certification. The exact release SHA is considered natively verified only after:
-
-```bash
-/Applications/Blender.app/Contents/MacOS/Blender \
-  --background --factory-startup \
-  --python tests/run_blender_tests.py
-```
+Use the repository's real build/test gate and the KairoGameEngine portfolio
+acceptance runner. Do not cite this repository as 95% complete until the
+accepted exact-head evidence matches the current revision.
