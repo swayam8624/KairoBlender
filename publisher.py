@@ -41,10 +41,6 @@ def export_and_publish(
     blend_path = Path(bpy.data.filepath)
     if not blend_path.is_file():
         raise FileNotFoundError("save the Blender scene before publishing")
-    if bpy.data.is_dirty:
-        raise RuntimeError(
-            "save Blender scene changes before publishing so provenance matches exported content"
-        )
     try:
         source_path = blend_path.resolve().relative_to(root).as_posix()
     except ValueError as error:
@@ -54,10 +50,32 @@ def export_and_publish(
     if selected_only and not context.selected_objects:
         raise ValueError("select at least one object before publishing")
 
+    source_fingerprint = fingerprint_file(blend_path)
+
     with tempfile.TemporaryDirectory(prefix="kairo-blender-export-") as directory:
         staging = Path(directory)
         geometry = staging / "geometry"
+        source = staging / "source"
         geometry.mkdir()
+        source.mkdir()
+        snapshot_path = source / f"{asset_name}.blend"
+
+        # Blender's global is_dirty flag is not reliable for Python-driven
+        # edits in background/headless execution. Publication therefore carries
+        # an immutable copy of the exact live in-memory .blend state that the
+        # exporter observes. The original on-disk scene remains the authored
+        # source identity; the bundled snapshot is the reproducible export state.
+        original_filepath = bpy.data.filepath
+        snapshot_result = bpy.ops.wm.save_as_mainfile(
+            filepath=str(snapshot_path),
+            check_existing=False,
+            copy=True,
+        )
+        if snapshot_result != {"FINISHED"} or not snapshot_path.is_file():
+            raise RuntimeError("Blender could not create the export-state source snapshot")
+        if bpy.data.filepath != original_filepath:
+            raise RuntimeError("Blender source snapshot unexpectedly changed the active scene path")
+
         gltf_path = geometry / f"{asset_name}.gltf"
         result = bpy.ops.export_scene.gltf(
             filepath=str(gltf_path),
@@ -85,15 +103,23 @@ def export_and_publish(
         outputs = (
             _publish_file(staging, gltf_path, role="scene", media_type="model/gltf+json"),
         )
-        dependencies = tuple(
+        dependencies = (
             _publish_file(
                 staging,
-                path,
-                role=_dependency_role(path),
-                media_type=_media_type(path),
-            )
-            for path in exported
-            if path != gltf_path
+                snapshot_path,
+                role="source-snapshot",
+                media_type="application/x-blender",
+            ),
+            *(
+                _publish_file(
+                    staging,
+                    path,
+                    role=_dependency_role(path),
+                    media_type=_media_type(path),
+                )
+                for path in exported
+                if path != gltf_path and path != snapshot_path
+            ),
         )
         manifest = PublishManifest(
             kind=PublishKind.ASSET,
@@ -102,13 +128,15 @@ def export_and_publish(
             version=version,
             source_host="blender",
             source_path=source_path,
-            source_fingerprint=fingerprint_file(blend_path),
+            source_fingerprint=source_fingerprint,
             outputs=outputs,
             dependencies=dependencies,
             metadata={
                 "blender_version": bpy.app.version_string,
                 "export_format": "gltf-separate",
                 "scope": "selected" if selected_only else "scene",
+                "export_state_source": snapshot_path.relative_to(staging).as_posix(),
+                "provenance_model": "saved-source-plus-live-snapshot-v1",
             },
         )
         library = root / "Published"
