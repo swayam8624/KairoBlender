@@ -26,7 +26,6 @@ class ExtensionRegistrationTests(unittest.TestCase):
         if not cube.data.uv_layers:
             cube.data.uv_layers.new(name="UVMap")
         material = bpy.data.materials.new(name="Material")
-        material.use_nodes = True
         cube.data.materials.append(material)
 
     def test_register_and_unregister_extension(self) -> None:
