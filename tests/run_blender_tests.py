@@ -172,8 +172,11 @@ class ExtensionRegistrationTests(unittest.TestCase):
                 self.assertEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
 
                 settings.replace_existing = True
-                cube = bpy.context.scene.objects["Cube"]
-                cube.location.x = 3.0
+                # Use a real Blender edit operator rather than assuming direct
+                # Python RNA assignment toggles the global dirty bit in
+                # background mode. Adding geometry is an unsaved authoring edit
+                # and changes the selected-only export payload.
+                bpy.ops.mesh.primitive_uv_sphere_add(location=(3.0, 0.0, 0.0))
                 self.assertTrue(bpy.data.is_dirty)
 
                 # Exporting unsaved data would make the source fingerprint lie
