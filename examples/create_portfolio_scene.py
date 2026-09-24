@@ -24,7 +24,6 @@ if not crate.data.uv_layers:
     crate.data.uv_layers.new(name="UVMap")
 
 material = bpy.data.materials.new(name="WorkshopPaint")
-material.use_nodes = True
 principled = material.node_tree.nodes.get("Principled BSDF")
 principled.inputs["Base Color"].default_value = (0.055, 0.18, 0.32, 1.0)
 principled.inputs["Metallic"].default_value = 0.35
@@ -39,7 +38,6 @@ bpy.ops.mesh.primitive_plane_add(size=20.0, location=(0.0, 0.0, 0.0))
 ground = bpy.context.active_object
 ground.name = "PresentationGround"
 ground_material = bpy.data.materials.new(name="GroundMaterial")
-ground_material.use_nodes = True
 ground_principled = ground_material.node_tree.nodes.get("Principled BSDF")
 ground_principled.inputs["Base Color"].default_value = (0.025, 0.03, 0.045, 1.0)
 ground_principled.inputs["Roughness"].default_value = 0.7
