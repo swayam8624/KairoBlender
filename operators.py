@@ -215,7 +215,25 @@ class KAIRO_OT_publish(bpy.types.Operator):
             )
             self.report({"INFO"}, settings.last_summary)
             return {"FINISHED"}
-        except (OSError, TypeError, ValueError, RuntimeError) as error:
+        except (FileExistsError, FileNotFoundError, NotADirectoryError, ValueError) as error:
+            # These are expected, user-correctable publication rejections.
+            # Blender escalates ERROR reports from bpy.ops into RuntimeError,
+            # so report them as warnings and preserve the operator's CANCELLED
+            # contract for scripts/tests/UI callers.
+            settings.last_summary = f"Publish blocked: {error}"
+            self.report({"WARNING"}, settings.last_summary)
+            return {"CANCELLED"}
+        except RuntimeError as error:
+            # Unsaved-scene provenance rejection is also expected. Other
+            # RuntimeError instances are treated as internal failures below.
+            if "save Blender scene changes before publishing" in str(error):
+                settings.last_summary = f"Publish blocked: {error}"
+                self.report({"WARNING"}, settings.last_summary)
+                return {"CANCELLED"}
+            settings.last_summary = f"Publish failed: {error}"
+            self.report({"ERROR"}, settings.last_summary)
+            return {"CANCELLED"}
+        except OSError as error:
             settings.last_summary = f"Publish failed: {error}"
             self.report({"ERROR"}, settings.last_summary)
             return {"CANCELLED"}
