@@ -41,9 +41,18 @@ version.
 
 ## 5. Publish
 
-**Publish** exports separate glTF, verifies every file, stages the complete
-bundle beside its final destination, and exposes it through one atomic rename.
-The panel records the final directory and manifest SHA-256 digest.
+**Publish** first writes a temporary Blender **Save Copy** of the exact live
+in-memory scene, then exports separate glTF from that same state. The immutable
+bundle contains that `source-snapshot` dependency, the glTF payload, and all
+declared external files. The manifest keeps the original saved `.blend` path
+and fingerprint as authored-source identity while
+`metadata.export_state_source` identifies the bundled snapshot that actually
+corresponds to the export. This avoids relying on Blender's global dirty flag,
+which is not reliable for every Python/headless edit.
+
+Kairo verifies every staged file, publishes beside the final destination, and
+exposes the complete version through one atomic rename. The panel records the
+final directory and manifest SHA-256 digest.
 
 Existing versions are protected by default. **Replace Existing Version** must
 be chosen explicitly; the old version remains available for rollback until the
