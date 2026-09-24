@@ -47,8 +47,19 @@ After installing and enabling the extension:
 ```
 
 The script creates a redistributable scene from primitives, validates the
-selected asset with zero diagnostics, saves the `.blend` inside a temporary
-portfolio project, and renders the documented 1280×720 result.
+selected asset with zero diagnostics, saves the `.blend` inside ignored
+`test-output/`, and renders a 1280×720 result there. Normal example/acceptance
+runs never modify the tracked documentation image.
+
+Maintainers may intentionally refresh the checked-in screenshot with:
+
+```bash
+KAIRO_UPDATE_DOC_IMAGE=1 \
+  /Applications/Blender.app/Contents/MacOS/Blender \
+  --background --python examples/create_portfolio_scene.py
+```
+
+Review that binary diff before committing it.
 
 See [the artist workflow](docs/ARTIST_WORKFLOW.md) for validation, safe fixes,
 dry-run behavior, publication, and failure recovery.
