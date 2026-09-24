@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import bpy
@@ -71,7 +72,15 @@ scene.render.resolution_x = 1280
 scene.render.resolution_y = 720
 scene.render.resolution_percentage = 100
 scene.render.image_settings.file_format = "PNG"
-scene.render.filepath = str(repository / "docs" / "images" / "blender-asset-result.png")
+# Normal example/acceptance runs must never dirty a tracked documentation
+# artifact. Updating the checked-in image is an explicit maintainer action.
+update_docs = os.environ.get("KAIRO_UPDATE_DOC_IMAGE") == "1"
+render_output = (
+    repository / "docs" / "images" / "blender-asset-result.png"
+    if update_docs
+    else project / "blender-asset-result.png"
+)
+scene.render.filepath = str(render_output)
 scene.render.film_transparent = False
 scene.world.color = (0.008, 0.012, 0.025)
 
@@ -91,3 +100,4 @@ bpy.ops.kairo.validate()
 bpy.ops.wm.save_as_mainfile(filepath=str(scene_path), check_existing=False)
 bpy.ops.render.render(write_still=True)
 print(scene_path)
+print(render_output)
