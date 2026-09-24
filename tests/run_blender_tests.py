@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -172,26 +173,58 @@ class ExtensionRegistrationTests(unittest.TestCase):
                 self.assertEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
 
                 settings.replace_existing = True
-                # Use a real Blender edit operator rather than assuming direct
-                # Python RNA assignment toggles the global dirty bit in
-                # background mode. Adding geometry is an unsaved authoring edit
-                # and changes the selected-only export payload.
-                bpy.ops.mesh.primitive_uv_sphere_add(location=(3.0, 0.0, 0.0))
-                self.assertTrue(bpy.data.is_dirty)
 
-                # Exporting unsaved data would make the source fingerprint lie
-                # about what was exported, so certification requires rejection.
-                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"CANCELLED"})
-                self.assertEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
+                first_document = json.loads(first_manifest)
+                first_source_fingerprint = first_document["source_fingerprint"]
+                first_snapshot = next(
+                    item
+                    for item in first_document["dependencies"]
+                    if item["role"] == "source-snapshot"
+                )
+                self.assertTrue((target / first_snapshot["path"]).is_file())
 
+                # Headless Python edits do not reliably toggle bpy.data.is_dirty.
+                # Publication must still preserve the exact live state. Change
+                # the selected object without saving and replace the version.
+                cube = bpy.context.scene.objects["Cube"]
+                cube.location.x = 3.0
+                self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"FINISHED"})
+
+                second_manifest = (target / "publish.kairo.json").read_bytes()
+                second_document = json.loads(second_manifest)
+                second_snapshot = next(
+                    item
+                    for item in second_document["dependencies"]
+                    if item["role"] == "source-snapshot"
+                )
+
+                # The authored on-disk source did not change, but the immutable
+                # bundled live-state snapshot and exported result did.
+                self.assertEqual(
+                    second_document["source_fingerprint"],
+                    first_source_fingerprint,
+                )
+                self.assertNotEqual(
+                    second_snapshot["fingerprint"],
+                    first_snapshot["fingerprint"],
+                )
+                self.assertNotEqual(second_manifest, first_manifest)
+                self.assertNotEqual(settings.last_publish_hash, first_hash)
+
+                # Saving the edited scene advances the authored source
+                # fingerprint on the next explicit replacement.
                 bpy.ops.wm.save_as_mainfile(
                     filepath=str(blend_path),
                     check_existing=False,
                 )
-                self.assertFalse(bpy.data.is_dirty)
                 self.assertEqual(bpy.ops.kairo.publish(dry_run=False), {"FINISHED"})
-                self.assertNotEqual(settings.last_publish_hash, first_hash)
-                self.assertNotEqual((target / "publish.kairo.json").read_bytes(), first_manifest)
+                third_document = json.loads(
+                    (target / "publish.kairo.json").read_bytes()
+                )
+                self.assertNotEqual(
+                    third_document["source_fingerprint"],
+                    first_source_fingerprint,
+                )
         finally:
             extension.unregister()
 
