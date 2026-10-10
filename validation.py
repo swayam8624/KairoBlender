@@ -7,6 +7,7 @@ import math
 import re
 from typing import Iterable
 
+from kairo_pipeline.paths import normalize_project_path
 from kairo_pipeline.diagnostics import (
     Diagnostic,
     DiagnosticBag,
@@ -72,6 +73,22 @@ class ValidationProfile:
     def __post_init__(self) -> None:
         if self.polygon_budget < 1:
             raise ValueError("polygon budget must be positive")
+
+
+def validate_publish_identity(project_name: str, asset_name: str, version: int) -> None:
+    """Reject unsafe authored destination names before any Blender filesystem operation.
+
+    A manifest's project/name components eventually become actual directories.
+    Prevent traversal and Windows device aliases before saving an exported
+    Blender snapshot or writing any temporary artifacts.
+    """
+
+    for label, value in (("project", project_name), ("asset", asset_name)):
+        if not isinstance(value, str) or not _PORTABLE_NAME.fullmatch(value):
+            raise ValueError(f"{label} name must be a portable identifier")
+        normalize_project_path(value)
+    if type(version) is not int or not 1 <= version <= 999_999:
+        raise ValueError("publish version must be an integer between 1 and 999999")
 
 
 def validate_scene(

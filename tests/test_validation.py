@@ -18,6 +18,7 @@ from validation import (  # noqa: E402
     ValidationProfile,
     blocking_codes,
     validate_scene,
+    validate_publish_identity,
 )
 
 
@@ -133,6 +134,20 @@ class ValidationTests(unittest.TestCase):
         codes = {item.code for item in diagnostics}
         self.assertIn("OBJECT_NAME_COLLISION", codes)
         self.assertIn("SCENE_POLYGON_BUDGET", codes)
+
+    def test_export_destination_preflight_rejects_unsafe_names(self) -> None:
+        invalid_names = ("CON", "AUX", "com1", "LPT9.txt", "../outside",
+                         "asset/escape", "Asset Name", "..", "")
+        for name in invalid_names:
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                validate_publish_identity("Project", name, 1)
+            with self.subTest(project=name), self.assertRaises(ValueError):
+                validate_publish_identity(name, "Asset", 1)
+        for version in (0, -1, 1_000_000, True, 1.5, "1"):
+            with self.subTest(version=version), self.assertRaises(ValueError):
+                validate_publish_identity("Project", "Asset", version)
+        self.assertIsNone(validate_publish_identity("Studio", "Chair", 10))
+        self.assertIsNone(validate_publish_identity("Studio", "COM10", 10))
 
     def test_blocking_codes_excludes_warnings(self) -> None:
         scene = SceneSnapshot(

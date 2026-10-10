@@ -12,6 +12,8 @@ from kairo_pipeline.fingerprint import fingerprint_file
 from kairo_pipeline.manifest import PublishFile, PublishKind, PublishManifest
 from kairo_pipeline.publish import plan_publish, publish_bundle
 
+from .validation import validate_publish_identity
+
 
 @dataclass(frozen=True, slots=True)
 class BlenderPublishResult:
@@ -34,6 +36,8 @@ def export_and_publish(
     replace: bool,
 ) -> BlenderPublishResult:
     """Export one static glTF source package and publish it atomically."""
+
+    validate_publish_identity(project_name, asset_name, version)
 
     root = Path(project_root).expanduser().resolve(strict=False)
     if not root.is_dir():
