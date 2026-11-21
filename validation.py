@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Host-neutral SceneSnapshot/ObjectSnapshot rules and DiagnosticBag production checks. operators.py
+# displays and optionally fixes specific issues; publisher.py blocks release when validation fails.
+# See docs/SOURCE_READING_ORDER.md for UI → validation → publish.
+
 """Pure scene snapshots and validation rules for Blender publishing."""
 
 from __future__ import annotations
