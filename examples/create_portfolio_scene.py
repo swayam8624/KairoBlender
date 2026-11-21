@@ -1,3 +1,9 @@
+# TEACHING MAP — examples/create_portfolio_scene.py
+# Builds a reproducible Blender scene fixture used to demonstrate the asset validation and
+# publication workflow; not a general modeling engine or evidence that all host versions
+# work.
+# Read READING_ORDER.md; original bridge code retains GPL-3.0-or-later.
+
 """Create the redistributable native scene used in documentation captures."""
 
 from __future__ import annotations
