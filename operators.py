@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Blender UI commands invoke adapter snapshots, pure validation rules and explicit publish/export.
+# Native mutation/fixes are limited to listed safe operations, not arbitrary automatic scene repair.
+# See docs/SOURCE_READING_ORDER.md for UI → validation → publish.
+
 """Interactive validation and diagnostic navigation operators."""
 
 from __future__ import annotations
