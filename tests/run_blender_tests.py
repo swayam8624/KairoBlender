@@ -1,3 +1,9 @@
+# TEACHING MAP — tests/run_blender_tests.py
+# Native Blender-background test entry point, executing bpy registration and operator
+# workflows. Requires an actual Blender binary rather than merely importing Python
+# fixtures.
+# Read READING_ORDER.md; original bridge code retains GPL-3.0-or-later.
+
 """Native Blender smoke tests executed in a factory-startup process."""
 
 from __future__ import annotations
