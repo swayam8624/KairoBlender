@@ -1,3 +1,8 @@
+# TEACHING MAP — adapter.py
+# Converts native bpy scene/node/material geometry into portable validation inputs. Keep
+# Blender API access here so tests and publisher logic can operate on stable, typed data.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Translation from Blender data blocks into immutable validation snapshots."""
 
 from __future__ import annotations
