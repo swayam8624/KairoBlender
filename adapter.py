@@ -21,6 +21,9 @@ from .validation import (
 )
 
 
+# Teaching: take an immutable snapshot of mutable bpy data before running
+# portable rules in validation.py. The snapshot is deliberately not a live
+# Blender-object handle and can be inspected deterministically.
 def snapshot_scene(
     context: bpy.types.Context,
     *,
