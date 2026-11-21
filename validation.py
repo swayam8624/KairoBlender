@@ -96,6 +96,9 @@ def validate_publish_identity(project_name: str, asset_name: str, version: int) 
         raise ValueError("publish version must be an integer between 1 and 999999")
 
 
+# Teaching: pure checks operate on snapshots rather than bpy APIs so CI
+# can cover rule semantics without booting Blender. Operators surface these
+# DiagnosticBag results and decide whether a host-side fix is permitted.
 def validate_scene(
     scene: SceneSnapshot,
     profile: ValidationProfile = ValidationProfile(),
