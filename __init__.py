@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Blender extension registration surface: connects bpy property groups, operators and panels; does not
+# duplicate portable validator/publisher semantics.
+# See docs/SOURCE_READING_ORDER.md for UI → validation → publish.
+
 """Kairo artist-facing validation and publishing extension for Blender."""
 
 from __future__ import annotations
