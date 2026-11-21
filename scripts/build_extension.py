@@ -1,3 +1,8 @@
+# TEACHING MAP — scripts/build_extension.py
+# Packages Blender extension files for installation. It must keep the native registration
+# entrypoint, license/metadata and KairoPipelineCore dependency boundaries consistent.
+# Read READING_ORDER.md; original bridge code retains GPL-3.0-or-later.
+
 """Build a reproducible Blender extension package with the pinned core wheel."""
 
 from __future__ import annotations
