@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Runs native Blender-host regression checks where bpy is actually available; cannot be replaced by
+# pure-Python mocks.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 """Native Blender smoke tests executed in a factory-startup process."""
 
 from __future__ import annotations

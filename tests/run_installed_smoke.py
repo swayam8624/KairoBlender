@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Post-install Blender extension smoke test verifying registration/integration in host runtime,
+# separate from build archive generation.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 """Verify the packaged extension is enabled and exposes its artist UI state."""
 
 from __future__ import annotations

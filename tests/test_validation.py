@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Portable snapshot/rule tests that do not require bpy; confirm diagnostics and publisher
+# prerequisites on deterministic synthetic data.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 from __future__ import annotations
 
 from pathlib import Path

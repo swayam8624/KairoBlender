@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Blender UI panel presents validation, diagnostics, fixes and publish controls; underlying mutation
+# belongs to operators.py and shared KairoPipelineCore.
+# See docs/SOURCE_READING_ORDER.md for UI → validation → publish.
+
 """Blender 3D View user interface for the Kairo workflow."""
 
 from __future__ import annotations

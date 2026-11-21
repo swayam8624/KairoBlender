@@ -1,5 +1,7 @@
 # Kairo Blender Bridge
 
+> **Learn from source:** [Source teaching guide](docs/SOURCE_READING_ORDER.md) follows Blender panel/operator interactions through immutable scene snapshots, validation, glTF export, and KairoPipelineCore atomic publication, with links to native and portable tests. Existing project [LICENSE](LICENSE) is preserved; third-party DCC packages and assets retain their own terms.
+
 Kairo Blender Bridge is an artist-facing Blender extension for validating and
 publishing production assets into the Kairo asset pipeline. It is one part of
 the multi-DCC Kairo Production Tools portfolio.

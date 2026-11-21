@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Blender scene-level extension settings and diagnostic properties, consumed by panel/operators
+# without owning the publisher's on-disk artifact state.
+# See docs/SOURCE_READING_ORDER.md for UI → validation → publish.
+
 """Persistent Blender scene settings for the Kairo pipeline."""
 
 from __future__ import annotations
