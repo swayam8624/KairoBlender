@@ -6,17 +6,17 @@ Follow source links sequentially. For each API/function, identify its input cont
 
 ## Read in this order
 
-1. [`README.md`](README.md)
-2. [`__init__.py`](__init__.py)
-3. [`properties.py`](properties.py)
-4. [`panel.py`](panel.py)
-5. [`operators.py`](operators.py)
-6. [`validation.py`](validation.py)
-7. [`adapter.py`](adapter.py)
-8. [`publisher.py`](publisher.py)
-9. [`scripts`](scripts)
-10. [`tests`](tests)
-11. [`docs`](docs)
+1. [`README.md`](../README.md)
+2. [`__init__.py`](../__init__.py)
+3. [`properties.py`](../properties.py)
+4. [`panel.py`](../panel.py)
+5. [`operators.py`](../operators.py)
+6. [`validation.py`](../validation.py)
+7. [`adapter.py`](../adapter.py)
+8. [`publisher.py`](../publisher.py)
+9. [`scripts`](../scripts)
+10. [`tests`](../tests)
+11. [`docs`](../docs)
 
 ## How this repository interacts with others
 
@@ -27,5 +27,5 @@ Panel/operator code receives user actions; validation identifies issues, adapter
 - Read the public C++23 module/entrypoint first, then its implementation and tests.
 - Explain invariants, ownership, error states, concurrency or numerical assumptions in comments, not trivial syntax.
 - A passing CI job covers only tests actually run on that commit/host; source presence is not runtime certification.
-- Check [STATUS.md](STATUS.md) and [STATUS.yaml](STATUS.yaml) for current explicit verification limitations.
+- Check [STATUS.md](../STATUS.md) and [STATUS.yaml](../STATUS.yaml) for current explicit verification limitations.
 - Original work may be modified and extended under the repository license; third-party content retains upstream terms.
