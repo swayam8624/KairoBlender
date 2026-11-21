@@ -1,3 +1,9 @@
+# SOURCE STUDY NOTE:
+# Requires saved Blender project, validates project identity and scene, exports glTF from bpy,
+# fingerprints generated files and calls KairoPipelineCore plan_publish/publish_bundle for atomic
+# versioned output.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 """Deterministic Blender export and atomic production publication."""
 
 from __future__ import annotations
