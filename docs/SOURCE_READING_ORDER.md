@@ -29,3 +29,31 @@ Panel/operator code receives user actions; validation identifies issues, adapter
 - A passing CI job covers only tests actually run on that commit/host; source presence is not runtime certification.
 - Check [STATUS.md](../STATUS.md) and [STATUS.yaml](../STATUS.yaml) for current explicit verification limitations.
 - Original work may be modified and extended under the repository license; third-party content retains upstream terms.
+
+
+## Complete source-file inventory
+
+After the curated teaching path, follow this deterministic inventory of first-party source, scripts, shaders, and tests. Grouping is a suggested learning order, not an indication that every function is already annotated. Vendored dependencies, ROMs, binaries, data, media, and generated evidence are excluded.
+
+### Implementation and other source (8)
+
+1. [`__init__.py`](../__init__.py)
+2. [`adapter.py`](../adapter.py)
+3. [`examples/create_portfolio_scene.py`](../examples/create_portfolio_scene.py)
+4. [`operators.py`](../operators.py)
+5. [`panel.py`](../panel.py)
+6. [`properties.py`](../properties.py)
+7. [`publisher.py`](../publisher.py)
+8. [`validation.py`](../validation.py)
+
+### Automation and tooling (1)
+
+1. [`scripts/build_extension.py`](../scripts/build_extension.py)
+
+### Verification and tests (3)
+
+1. [`tests/run_blender_tests.py`](../tests/run_blender_tests.py)
+2. [`tests/run_installed_smoke.py`](../tests/run_installed_smoke.py)
+3. [`tests/test_validation.py`](../tests/test_validation.py)
+
+Snapshot totals: 12 first-party source/build/test files, 22 tracked files overall. Re-audit when files are renamed or added.
