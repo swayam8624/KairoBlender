@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Reproducible authored Blender example used by integration and portfolio evidence; host application
+# is required and generated scene content has its own source/provenance.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 """Create the redistributable native scene used in documentation captures."""
 
 from __future__ import annotations
