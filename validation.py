@@ -1,3 +1,9 @@
+# TEACHING MAP — validation.py
+# Runs bounded, host-neutral checks on a captured Blender-scene snapshot and returns
+# diagnostics. operators.py presents those messages and may offer explicit fixes;
+# validation should not mutate original scene data.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Pure scene snapshots and validation rules for Blender publishing."""
 
 from __future__ import annotations
