@@ -30,6 +30,9 @@ class BlenderPublishResult:
     dry_run: bool
 
 
+# Teaching: publishing crosses from bpy export to KairoPipelineCore's
+# validated filesystem transaction. Identity, saved scene and asset paths
+# must be checked before any versioned output becomes visible.
 def export_and_publish(
     context: bpy.types.Context,
     *,
