@@ -1,3 +1,9 @@
+# TEACHING MAP — properties.py
+# Declares Blender scene-level extension properties and diagnostic display state. Panel and
+# operators bind these bpy PropertyGroup values; portable validation remains in
+# validation.py.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Persistent Blender scene settings for the Kairo pipeline."""
 
 from __future__ import annotations

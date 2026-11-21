@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/run_installed_smoke.py
+# Smoke checks the packaged extension in an installed Blender host. Confirms
+# installation/registration separately from unit-level validators.
+# Read READING_ORDER.md; original bridge code retains GPL-3.0-or-later.
+
 """Verify the packaged extension is enabled and exposes its artist UI state."""
 
 from __future__ import annotations

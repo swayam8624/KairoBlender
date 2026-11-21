@@ -1,3 +1,8 @@
+# TEACHING MAP — publisher.py
+# Coordinates glTF export and immutable production publication through KairoPipelineCore.
+# Follow validator and paths/fingerprint APIs; dry-run must not alter source .blend files.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Deterministic Blender export and atomic production publication."""
 
 from __future__ import annotations

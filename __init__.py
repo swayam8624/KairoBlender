@@ -1,3 +1,9 @@
+# TEACHING MAP — __init__.py
+# Blender add-on registration entry point. Registers panels, operators and property groups
+# with bpy; validation, scene adapter and publisher contain domain logic in separate files.
+# Registration requires an actual Blender host.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Kairo artist-facing validation and publishing extension for Blender."""
 
 from __future__ import annotations

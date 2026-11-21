@@ -1,3 +1,9 @@
+# TEACHING MAP — operators.py
+# Defines bpy.types.Operator commands such as validation and publish. Each execute callback
+# reads Blender context, calls snapshot_scene/validate_scene/export_and_publish, and
+# reports errors without bypassing user-approved mutation.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Interactive validation and diagnostic navigation operators."""
 
 from __future__ import annotations

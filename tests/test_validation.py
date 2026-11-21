@@ -1,3 +1,8 @@
+# TEACHING MAP — tests/test_validation.py
+# Pure validation tests using portable scene snapshots, asserting diagnostic codes and safe
+# rules without requiring actual viewport interaction.
+# Read READING_ORDER.md; original bridge code retains GPL-3.0-or-later.
+
 from __future__ import annotations
 
 from pathlib import Path

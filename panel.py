@@ -1,3 +1,9 @@
+# TEACHING MAP — panel.py
+# Renders Blender add-on UI controls, operator buttons, settings and diagnostics. It is a
+# view of properties/operators, not the owner of portable asset validation or atomic file
+# publication.
+# Read READING_ORDER.md for linked files, Blender API calls and licensing.
+
 """Blender 3D View user interface for the Kairo workflow."""
 
 from __future__ import annotations
