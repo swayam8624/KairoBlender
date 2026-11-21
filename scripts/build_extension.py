@@ -1,3 +1,8 @@
+# SOURCE STUDY NOTE:
+# Build/package command assembles the Blender extension and KairoPipelineCore wheel;
+# installation/native Blender validation is distinct from Python test success.
+# Follow docs/SOURCE_READING_ORDER.md for native-host vs portable tests.
+
 """Build a reproducible Blender extension package with the pinned core wheel."""
 
 from __future__ import annotations
