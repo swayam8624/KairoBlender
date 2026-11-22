@@ -1,4 +1,13 @@
-# TEACHING MAP: Blender-specific preflight rules expose actionable diagnostics to operators.py and panel.py; publisher.py packages validated content through KairoPipelineCore. GUI host state must be kept distinct from portable manifest checks.
+# TEACHING MODULE: Pure, host-neutral Blender scene preflight. Blender's
+# bpy adapter snapshots objects, meshes, transforms, materials and image
+# paths into immutable dataclasses; validate_scene checks that snapshot
+# against a ValidationProfile and returns actionable Diagnostics.
+#
+# No scene is exported or published here. Operators/panel render diagnostics
+# and control the user workflow; publisher.py invokes the shared
+# KairoPipelineCore publish contract only after blockers are cleared.
+# A passed snapshot check does not prove Blender export succeeded, nor
+# that artist-owned textures have redistribution permission.
 """Pure scene snapshots and validation rules for Blender publishing."""
 
 from __future__ import annotations
@@ -92,6 +101,9 @@ def validate_publish_identity(project_name: str, asset_name: str, version: int) 
         raise ValueError("publish version must be an integer between 1 and 999999")
 
 
+# Apply profile-dependent identity, transform, mesh and material rules
+# to detached snapshot data. Blocking diagnostics prevent downstream
+# publish even when the live Blender UI can still display a scene.
 def validate_scene(
     scene: SceneSnapshot,
     profile: ValidationProfile = ValidationProfile(),
@@ -350,6 +362,8 @@ def _validate_material(
             )
 
 
+# Convert the diagnostics into deterministic blocking code identities.
+# A caller should not substitute human message strings for policy keys.
 def blocking_codes(diagnostics: Iterable[Diagnostic]) -> tuple[str, ...]:
     """Return deterministic error codes for UI summaries and headless gates."""
 
