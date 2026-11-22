@@ -1,3 +1,13 @@
+# TEACHING MODULE: Blender-specific export is a distinct, host-bound phase
+# before the portable KairoPipelineCore publication stage. bpy writes a
+# temporary glTF/GLB payload; its declared files and external dependencies
+# are then fingerprinted into a PublishManifest. plan_publish validates
+# all bytes/paths before publish_bundle stages and atomically exposes output.
+#
+# A dry-run should not publish a new version. The source Blender document
+# remains the authoring authority; a published asset bundle is a derived
+# artifact consumed later by KairoAssets, not a native GPU object.
+# Imported models/images retain their own license/creator attribution.
 """Deterministic Blender export and atomic production publication."""
 
 from __future__ import annotations
@@ -24,6 +34,9 @@ class BlenderPublishResult:
     dry_run: bool
 
 
+# Own the bpy export lifecycle, then hand immutable files and hashes to
+# the shared publisher. Host-specific errors should remain visible as
+# diagnostics; a preflight pass alone does not certify the exported bytes.
 def export_and_publish(
     context: bpy.types.Context,
     *,
