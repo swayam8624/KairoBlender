@@ -1,5 +1,7 @@
 # Kairo Blender Bridge
 
+**Study the implementation:** [linked file-reading order](docs/SOURCE_READING_ORDER.md) · [Blender preflight/export and shared publication](https://github.com/swayam8624/KairoPipelineCore/blob/docs/teaching-walkthrough-20261121/docs/CROSS_DCC_PUBLICATION_WALKTHROUGH.md).
+
 Kairo Blender Bridge is an artist-facing Blender extension for validating and
 publishing production assets into the Kairo asset pipeline. It is one part of
 the multi-DCC Kairo Production Tools portfolio.
