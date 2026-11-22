@@ -1,4 +1,4 @@
-// TEACHING MAP: Blender-specific preflight rules expose actionable diagnostics to operators.py and panel.py; publisher.py packages validated content through KairoPipelineCore. GUI host state must be kept distinct from portable manifest checks.
+# TEACHING MAP: Blender-specific preflight rules expose actionable diagnostics to operators.py and panel.py; publisher.py packages validated content through KairoPipelineCore. GUI host state must be kept distinct from portable manifest checks.
 """Pure scene snapshots and validation rules for Blender publishing."""
 
 from __future__ import annotations
