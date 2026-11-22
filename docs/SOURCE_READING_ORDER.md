@@ -1,4 +1,5 @@
 # Teaching source map — KairoBlender
+**Worked source walkthrough:** [Blender preflight → glTF export → shared publish](https://github.com/swayam8624/KairoPipelineCore/blob/docs/teaching-walkthrough-20261121/docs/CROSS_DCC_PUBLICATION_WALKTHROUGH.md).
 
 Blender artist UX on top of the common Kairo publication contract.
 
